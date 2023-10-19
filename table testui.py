@@ -10,10 +10,10 @@ class WindowClass(QMainWindow):
         loadUi("tabletestui.ui", self)
 
         self.tableWidget = QTableWidget(self)
-        self.dataset_QScrollBar.setWidget(self.tableWidget)
+        self.dataset_scrollarea.setWidget(self.tableWidget)
 
-        # databrowse"이 클릭되면 self.loadCsvFile 함수를 실행
-        self.databrowse.clicked.connect(self.loadCsvFile)
+        # "Database_select_button"이 클릭되면 self.loadCsvFile 함수를 실행
+        self.Database_select_button.clicked.connect(self.loadCsvFile)
 
     def loadCsvFile(self):
         fname = QFileDialog.getOpenFileName(self, 'Open file', './')
@@ -34,8 +34,8 @@ class WindowClass(QMainWindow):
             for j in range(self.dataset.shape[1]):
                 self.tableWidget.setItem(i, j, QTableWidgetItem(str(self.dataset.iat[i, j])))
 
-        if __name__ == "__main__":
-            app = QApplication(sys.argv)
-            myWindow = WindowClass()
-            myWindow.show()
-            app.exec_()
+if __name__ == "__main__":
+        app = QApplication(sys.argv)
+        myWindow = WindowClass()
+        myWindow.show()
+        app.exec_()
