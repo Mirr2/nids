@@ -47,7 +47,7 @@ def deep_learning(file_path):
 
 if __name__ == '__main__':
     if len(sys.argv) != 2:
-        print("Usage: python softmax.py <file_path>")
+        print('Usage: python binary.py <file_path>')
         sys.exit(1)
 
     file_path = sys.argv[1]

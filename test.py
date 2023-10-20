@@ -65,7 +65,7 @@ class MyWindow(QtWidgets.QMainWindow):
                 pass
             elif selected_algorithm == "딥 러닝":
                 # 딥 러닝 실행 코드를 추가
-                deep_learning_script = "softmax.py"  # softmax.py 파일 경로
+                deep_learning_script = "binary.py"
 
 if __name__ == "__main__":
     import sys
