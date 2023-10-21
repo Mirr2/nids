@@ -55,7 +55,7 @@ class WindowClass(QMainWindow):
         model_trainer = ModelTrainer(self.data_preprocessor.x, self.data_preprocessor.y)
         x_test, y_test = model_trainer.train_model_with_activation(selected_activation, selected_output_layer)
 
-
+    
 
 
 if __name__ == "__main__":
