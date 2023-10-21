@@ -107,7 +107,7 @@
      <rect>
       <x>170</x>
       <y>130</y>
-      <width>391</width>
+      <width>691</width>
       <height>161</height>
      </rect>
     </property>
@@ -119,7 +119,7 @@
       <rect>
        <x>0</x>
        <y>0</y>
-       <width>389</width>
+       <width>689</width>
        <height>159</height>
       </rect>
      </property>
@@ -129,8 +129,8 @@
     <property name="geometry">
      <rect>
       <x>170</x>
-      <y>300</y>
-      <width>391</width>
+      <y>330</y>
+      <width>691</width>
       <height>161</height>
      </rect>
     </property>
@@ -142,7 +142,7 @@
       <rect>
        <x>0</x>
        <y>0</y>
-       <width>389</width>
+       <width>689</width>
        <height>159</height>
       </rect>
      </property>
@@ -152,9 +152,9 @@
     <property name="geometry">
      <rect>
       <x>170</x>
-      <y>500</y>
+      <y>550</y>
       <width>391</width>
-      <height>31</height>
+      <height>51</height>
      </rect>
     </property>
     <property name="widgetResizable">
@@ -166,7 +166,7 @@
        <x>0</x>
        <y>0</y>
        <width>389</width>
-       <height>29</height>
+       <height>49</height>
       </rect>
      </property>
     </widget>
@@ -175,7 +175,7 @@
     <property name="geometry">
      <rect>
       <x>170</x>
-      <y>480</y>
+      <y>530</y>
       <width>101</width>
       <height>16</height>
      </rect>
@@ -195,26 +195,6 @@
     </property>
     <property name="value">
      <number>24</number>
-    </property>
-   </widget>
-   <widget class="QGraphicsView" name="loss_accuracy_graph">
-    <property name="geometry">
-     <rect>
-      <x>590</x>
-      <y>130</y>
-      <width>271</width>
-      <height>171</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QGraphicsView" name="confusion_metrix">
-    <property name="geometry">
-     <rect>
-      <x>590</x>
-      <y>310</y>
-      <width>271</width>
-      <height>181</height>
-     </rect>
     </property>
    </widget>
    <widget class="QTextBrowser" name="accuracy_f1score">
@@ -253,13 +233,13 @@
      <string>y_test</string>
     </property>
    </widget>
-   <widget class="QTextBrowser" name="accuracy_f1score_2">
+   <widget class="QTextBrowser" name="y_test_textBrowser">
     <property name="geometry">
      <rect>
       <x>590</x>
       <y>550</y>
       <width>271</width>
-      <height>21</height>
+      <height>51</height>
      </rect>
     </property>
    </widget>
@@ -320,6 +300,32 @@
       <string>linear</string>
      </property>
     </item>
+   </widget>
+   <widget class="QLabel" name="label_3">
+    <property name="geometry">
+     <rect>
+      <x>170</x>
+      <y>310</y>
+      <width>101</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>x_test</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="selected_preprocessing_label">
+    <property name="geometry">
+     <rect>
+      <x>300</x>
+      <y>70</y>
+      <width>171</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
    </widget>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>

@@ -3,6 +3,8 @@ from keras.models import Sequential
 from keras.layers import Dense
 import numpy as np
 import tensorflow as tf
+from keras.callbacks import History
+
 
 class ModelTrainer:
     def __init__(self, x, y):
@@ -20,6 +22,8 @@ class ModelTrainer:
         x_test = np.asarray(x_test).astype('float32')
         y_test = np.asarray(y_test).astype('float32')
 
+        history = History()  # Keras의 History 객체 초기화
+
         self.model = Sequential()
         self.model.add(Dense(30, input_dim=self.x.shape[1], activation=activation_function))
         
@@ -36,9 +40,9 @@ class ModelTrainer:
             raise ValueError('Invalid output_layer_type')
 
         self.model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
-        self.model.fit(x_train, y_train, epochs=10, batch_size=50)
+        self.model.fit(x_train, y_train, epochs=10, batch_size=50, callbacks=[history])
 
-        return self.model, x_test, y_test
+        return self.model, x_test, y_test, history.history['accuracy'], history.history['loss']    
 
 # from sklearn.model_selection import train_test_split
 # from keras.models import Sequential

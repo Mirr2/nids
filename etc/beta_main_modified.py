@@ -1,17 +1,23 @@
 import sys
 import matplotlib.pyplot as plt
-from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog, QTableWidget, QTableWidgetItem, QComboBox, QProgressBar, QVBoxLayout, QInputDialog
+from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog, QTableWidget, QTableWidgetItem, QComboBox, QProgressBar, QVBoxLayout
 from PyQt5.uic import loadUi
 import pandas as pd
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 from PyQt5.QtWidgets import QDialog
-from sklearn.metrics import confusion_matrix
-import seaborn as sns  # seaborn 라이브러리를 사용하여 혼동 행렬을 그립니다.
 
 
 from beta_data_preprocessor import DataPreprocessor
 from beta_model_trainer import ModelTrainer
+
+    def plot_confusion_matrix(self, y_true, y_pred):
+        conf_mat = confusion_matrix(y_true, y_pred)
+        ax = self.figure.add_subplot(122)  # Adding a subplot beside the graph
+        sns.heatmap(conf_mat, annot=True, ax=ax, fmt='g')
+        ax.set_xlabel('Predicted labels')
+        ax.set_ylabel('True labels')
+        ax.set_title('Confusion Matrix')
 from beta_model_evaluator import ModelEvaluator
 
 
@@ -19,8 +25,6 @@ class WindowClass(QMainWindow):
     def __init__(self):
         super(WindowClass, self).__init__()
         loadUi("beta_ui.ui", self)
-
-        self.Preprocessing_select_button.clicked.connect(self.show_preprocessing_selection)
 
         self.data_preprocessor = None
         
@@ -31,6 +35,7 @@ class WindowClass(QMainWindow):
         self.canvas = FigureCanvas(self.fig)
         layout = QVBoxLayout()
         layout.addWidget(self.canvas)
+        self.loss_accuracy_graph.setLayout(layout)
 
         self.Database_select_button.clicked.connect(self.select_dataset)
         self.train_button.clicked.connect(self.train_model)
@@ -41,20 +46,6 @@ class WindowClass(QMainWindow):
         self.progress_bar = self.findChild(QProgressBar, 'progressBar')
         self.progress_bar.setValue(1)
 
-
-
-    def show_preprocessing_selection(self):
-        algorithms = ["one-hot encoding", "label-encoding"]
-        selected_algorithm, okPressed = QInputDialog.getItem(self, "Select Algorithm", "Algorithm:", algorithms, 0, False)
-
-        if okPressed and selected_algorithm:
-            self.selected_preprocessing_label.setText(selected_algorithm)
-            if selected_algorithm == "one-hot encoding":
-                if self.data_preprocessor:
-                    self.data_preprocessor.one_hot_encode_string_columns()
-            elif selected_algorithm == "label-encoding":
-                if self.data_preprocessor:
-                    self.data_preprocessor.label_encode_string_columns()
 
 
 
@@ -72,8 +63,6 @@ class WindowClass(QMainWindow):
             self.dataset_filename_label.setText(filePath.split('/')[-1])
             self.dataset_path_label.setText(filePath)
             self.fillTable()
-            self.show_preprocessing_selection()
-
 
     def fillTable(self):
         self.tableWidget.setRowCount(self.dataset.shape[0])
@@ -112,9 +101,9 @@ class WindowClass(QMainWindow):
 
     def showGraphDialog(self):
         dialog = QDialog(self)
-        dialog.setWindowTitle("Accuracy, Loss, and Confusion Matrix")
+        dialog.setWindowTitle("Accuracy and Loss Graph")
 
-        fig, axs = plt.subplots(3, 1, figsize=(5, 8))  # 3개의 subplot을 가진다.
+        fig, axs = plt.subplots(2, 1, figsize=(5, 4))
         canvas = FigureCanvas(fig)
 
         layout = QVBoxLayout()
@@ -129,28 +118,6 @@ class WindowClass(QMainWindow):
 
         axs[1].plot(epochs, self.loss_data)
         axs[1].set_title('Loss')
-
-        # 혼동 행렬 계산 및 그리기
-        y_pred = self.trained_model.predict(self.x_test).argmax(axis=1)  # 모델의 예측값을 가져옵니다.
-
-        # y_test의 차원에 따라 적절한 axis 값을 설정
-        if len(self.y_test.shape) > 1 and self.y_test.shape[1] > 1:
-            y_true = self.y_test.argmax(axis=1)  # 실제 레이블을 가져옵니다.
-        else:
-            y_true = self.y_test  # 이미 1차원 배열이라면 그대로 사용
-
-        # 이제 여기에서 labels를 설정합니다.
-        if len(self.y_test.shape) > 1 and self.y_test.shape[1] > 1:
-            labels = list(range(self.y_test.shape[1]))  # 다중 레이블의 경우
-        else:
-            labels = list(set(y_true))  # 단일 레이블의 경우
-
-        conf_matrix = confusion_matrix(y_true, y_pred, labels=labels)
-
-        sns.heatmap(conf_matrix, annot=True, fmt='d', ax=axs[2], xticklabels=labels, yticklabels=labels)
-        axs[2].set_title('Confusion Matrix')
-        axs[2].set_xlabel('Predicted')
-        axs[2].set_ylabel('True')
 
         dialog.exec_()
 
@@ -213,4 +180,9 @@ if __name__ == "__main__":
     myWindow = WindowClass()
     myWindow.show()
     app.exec_()
+
+    # ... existing code in plot_graph ...
+    
+    # Plotting the confusion matrix
+    self.plot_confusion_matrix(y_true, y_pred)  # y_true and y_pred should be defined or passed
 
