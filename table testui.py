@@ -9,7 +9,7 @@ class WindowClass(QMainWindow):
         super(WindowClass, self).__init__()
         loadUi("tabletestui.ui", self)
 
-        # 첫 번째 테이블 위젯
+        #1 첫 번째 테이블 위젯
         self.tableWidget = QTableWidget(self)
         self.dataset_scrollarea.setWidget(self.tableWidget)
 
