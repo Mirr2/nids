@@ -1,6 +1,6 @@
 import pandas as pd
 from PyQt5 import QtWidgets, uic
-from PyQt5.QtWidgets import QFileDialog, QInputDialog, QMessageBox,QLabel
+from PyQt5.QtWidgets import QFileDialog, QInputDialog, QMessageBox
 
 class MyWindow(QtWidgets.QMainWindow):
     def __init__(self):
