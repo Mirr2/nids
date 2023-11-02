@@ -13,6 +13,7 @@ import seaborn as sns  # seaborn 라이브러리를 사용하여 혼동 행렬�
 from beta_data_preprocessor import DataPreprocessor
 from beta_model_trainer import ModelTrainer
 from beta_model_evaluator import ModelEvaluator
+from beta_callback import CustomCallback
 
 
 class WindowClass(QMainWindow):
@@ -27,17 +28,11 @@ class WindowClass(QMainWindow):
         self.tableWidget = QTableWidget(self)
         self.dataset_scrollarea.setWidget(self.tableWidget)
 
-        self.fig, self.ax = plt.subplots(2, 1, figsize=(5, 4))  # 2x1 subplots
-        self.canvas = FigureCanvas(self.fig)
-        layout = QVBoxLayout()
-        layout.addWidget(self.canvas)
-
         self.Database_select_button.clicked.connect(self.select_dataset)
         self.train_button.clicked.connect(self.train_model)
         self.hidden_layer_select.currentIndexChanged.connect(self.train_model)
         self.output_layer_select.currentIndexChanged.connect(self.train_model)
 
-        self.x_test_table = None
         self.progress_bar = self.findChild(QProgressBar, 'progressBar')
         self.progress_bar.setValue(1)
 
@@ -90,7 +85,13 @@ class WindowClass(QMainWindow):
 
         self.progress_bar.setValue(40)  # 전처리 완료
         model_trainer = ModelTrainer(self.data_preprocessor.x, self.data_preprocessor.y)
-        self.trained_model, self.x_test, self.y_test, self.accuracy_data, self.loss_data = model_trainer.train_model_with_activation(selected_activation, selected_output_layer)
+        
+        # CustomCallback 인스턴스 생성
+        custom_callback = CustomCallback(self.progress_list, self.progress_bar)
+        
+        # 모델 훈련
+        self.trained_model, self.x_test, self.y_test, self.accuracy_data, self.loss_data = model_trainer.train_model_with_activation(selected_activation, selected_output_layer, callbacks=[custom_callback])
+        
         self.progress_bar.setValue(70)  # 모델 훈련 완료
 
 
