@@ -36,11 +36,10 @@ class WindowClass(QMainWindow):
         self.progress_bar = self.findChild(QProgressBar, 'progressBar')
         self.progress_bar.setValue(1)
 
-
-
     def show_preprocessing_selection(self):
         algorithms = ["one-hot encoding", "label-encoding"]
-        selected_algorithm, okPressed = QInputDialog.getItem(self, "Select Algorithm", "Algorithm:", algorithms, 0, False)
+        selected_algorithm, okPressed = QInputDialog.getItem(self, "Select Algorithm", "Algorithm:", algorithms, 0,
+                                                             False)
 
         if okPressed and selected_algorithm:
             self.selected_preprocessing_label.setText(selected_algorithm)
@@ -51,8 +50,9 @@ class WindowClass(QMainWindow):
                 if self.data_preprocessor:
                     self.data_preprocessor.label_encode_string_columns()
 
-
-
+        self.x_test = self.data_preprocessor.x
+        # x_train 데이터를 테이블에 표시
+        self.fillXTestTable()
 
     def select_dataset(self):
         options = QFileDialog.Options()
