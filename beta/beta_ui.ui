@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>892</width>
-    <height>790</height>
+    <width>1551</width>
+    <height>831</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -376,6 +376,16 @@
      <string>Progress list</string>
     </property>
    </widget>
+   <widget class="mplwidget" name="loss_accuracy" native="true">
+    <property name="geometry">
+     <rect>
+      <x>930</x>
+      <y>180</y>
+      <width>531</width>
+      <height>431</height>
+     </rect>
+    </property>
+   </widget>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <widget class="QMenuBar" name="menuBar">
@@ -383,8 +393,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>892</width>
-     <height>24</height>
+     <width>1551</width>
+     <height>31</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu">
@@ -401,6 +411,14 @@
    </property>
   </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>mplwidget</class>
+   <extends>QWidget</extends>
+   <header>mplwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
