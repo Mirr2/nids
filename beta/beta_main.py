@@ -1,6 +1,6 @@
 import sys
 import matplotlib.pyplot as plt
-from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog, QTableWidget, QTableWidgetItem, QComboBox, QProgressBar, QVBoxLayout, QInputDialog
+from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog, QTableWidget, QTableWidgetItem, QComboBox, QProgressBar, QVBoxLayout, QInputDialog, QWidget
 from PyQt5.uic import loadUi
 import pandas as pd
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
@@ -9,7 +9,7 @@ from PyQt5.QtWidgets import QDialog
 from sklearn.metrics import confusion_matrix
 import seaborn as sns  # seaborn 라이브러리를 사용하여 혼동 행렬을 그립니다.
 
-
+from mplwidget import mplwidget
 from beta_data_preprocessor import DataPreprocessor
 from beta_model_trainer import ModelTrainer
 from beta_model_evaluator import ModelEvaluator
@@ -35,6 +35,13 @@ class WindowClass(QMainWindow):
 
         self.progress_bar = self.findChild(QProgressBar, 'progressBar')
         self.progress_bar.setValue(1)
+
+        # mplwidget을 플레이스홀더 위젯의 위치에 배치합니다.
+        self.mplwidget = mplwidget(self)
+        placeholder = self.findChild(QWidget, 'loss_accuracy')  # placeholderName은 Qt Designer에서 지정한 objectName입니다.
+        layout = QVBoxLayout()  # 또는 적절한 레이아웃
+        layout.addWidget(self.mplwidget)
+        placeholder.setLayout(layout)
 
     def show_preprocessing_selection(self):
         algorithms = ["one-hot encoding", "label-encoding"]
@@ -85,18 +92,22 @@ class WindowClass(QMainWindow):
 
         self.progress_bar.setValue(40)  # 전처리 완료
         model_trainer = ModelTrainer(self.data_preprocessor.x, self.data_preprocessor.y)
-        
+
         # CustomCallback 인스턴스 생성
-        custom_callback = CustomCallback(self.progress_list, self.progress_bar)
-        
+        custom_callback = CustomCallback(self.progress_list, self.progress_bar, self.mplwidget)  # mplwidget 추가
+
         # 모델 훈련
-        self.trained_model, self.x_test, self.y_test, self.accuracy_data, self.loss_data = model_trainer.train_model_with_activation(selected_activation, selected_output_layer, callbacks=[custom_callback])
-        
+        self.trained_model, self.x_test, self.y_test, self.accuracy_data, self.loss_data = \
+            model_trainer.train_model_with_activation(
+                selected_activation,
+                selected_output_layer,
+                callbacks=[custom_callback]
+            )
+
         self.progress_bar.setValue(70)  # 모델 훈련 완료
 
-
         # 모델 평가
-        model_evaluator = ModelEvaluator(self.trained_model)  
+        model_evaluator = ModelEvaluator(self.trained_model)
         self.accuracy = model_evaluator.evaluate_model(self.x_test, self.y_test)
         self.f1 = model_evaluator.calculate_f1_score(self.x_test, self.y_test)
         self.progress_bar.setValue(85)  # 모델 평가 완료
