@@ -24,7 +24,7 @@ class WindowClass(QMainWindow):
         self.Preprocessing_select_button.clicked.connect(self.show_preprocessing_selection)
 
         self.data_preprocessor = None
-        
+
         self.tableWidget = QTableWidget(self)
         self.dataset_scrollarea.setWidget(self.tableWidget)
 
@@ -78,11 +78,19 @@ class WindowClass(QMainWindow):
 
 
     def fillTable(self):
-        self.tableWidget.setRowCount(self.dataset.shape[0])
+        # self.tableWidget.setRowCount(self.dataset.shape[0])
+        # self.tableWidget.setColumnCount(self.dataset.shape[1])
+        # self.tableWidget.setHorizontalHeaderLabels(self.dataset.columns)
+        #
+        # for i in range(self.dataset.shape[0]):
+        #     for j in range(self.dataset.shape[1]):
+        #         self.tableWidget.setItem(i, j, QTableWidgetItem(str(self.dataset.iat[i, j])))
+
+        self.tableWidget.setRowCount(10)
         self.tableWidget.setColumnCount(self.dataset.shape[1])
         self.tableWidget.setHorizontalHeaderLabels(self.dataset.columns)
 
-        for i in range(self.dataset.shape[0]):
+        for i in range(10):
             for j in range(self.dataset.shape[1]):
                 self.tableWidget.setItem(i, j, QTableWidgetItem(str(self.dataset.iat[i, j])))
 
@@ -124,23 +132,14 @@ class WindowClass(QMainWindow):
 
     def showGraphDialog(self):
         dialog = QDialog(self)
-        dialog.setWindowTitle("Accuracy, Loss, and Confusion Matrix")
+        dialog.setWindowTitle("Confusion Matrix")
 
-        fig, axs = plt.subplots(3, 1, figsize=(5, 8))  # 3개의 subplot을 가진다.
+        fig, ax = plt.subplots(figsize=(5, 5))  # 하나의 subplot 생성
         canvas = FigureCanvas(fig)
 
         layout = QVBoxLayout()
         layout.addWidget(canvas)
         dialog.setLayout(layout)
-
-        # 실제 데이터로 그래프 그리기
-        epochs = range(1, len(self.accuracy_data) + 1)
-
-        axs[0].plot(epochs, self.accuracy_data)
-        axs[0].set_title('Accuracy')
-
-        axs[1].plot(epochs, self.loss_data)
-        axs[1].set_title('Loss')
 
         # 혼동 행렬 계산 및 그리기
         y_pred = self.trained_model.predict(self.x_test).argmax(axis=1)  # 모델의 예측값을 가져옵니다.
@@ -159,13 +158,12 @@ class WindowClass(QMainWindow):
 
         conf_matrix = confusion_matrix(y_true, y_pred, labels=labels)
 
-        sns.heatmap(conf_matrix, annot=True, fmt='d', ax=axs[2], xticklabels=labels, yticklabels=labels)
-        axs[2].set_title('Confusion Matrix')
-        axs[2].set_xlabel('Predicted')
-        axs[2].set_ylabel('True')
+        sns.heatmap(conf_matrix, annot=True, fmt='d', ax=ax, xticklabels=labels, yticklabels=labels)
+        ax.set_title('Confusion Matrix')
+        ax.set_xlabel('Predicted')
+        ax.set_ylabel('True')
 
         dialog.exec_()
-
 
     def fillXTestTable(self):
         x_test_df = pd.DataFrame(self.x_test)  # x_test를 DataFrame으로 변환
@@ -185,7 +183,7 @@ class WindowClass(QMainWindow):
 
         # x_test 테이블의 아이템 선택 상태가 변경될 때 실행할 메서드 연결
         self.x_test_table.itemSelectionChanged.connect(self.showSelectedRow)
-        
+
         # QScrollArea에 QTableWidget 설정
         self.x_test_scrollarea.setWidget(self.x_test_table)
 
@@ -206,12 +204,12 @@ class WindowClass(QMainWindow):
         # y_test QTextBrowser에 표시
         self.y_test_textBrowser.setText(str(corresponding_y_test))
 
-        
+
         # 선택된 행을 새로운 QTableWidget에 표시
         selected_row_table = QTableWidget()
         selected_row_table.setRowCount(1)
         selected_row_table.setColumnCount(len(selected_data))
-        
+
         for j, data in enumerate(selected_data):
             selected_row_table.setItem(0, j, QTableWidgetItem(str(data)))
 

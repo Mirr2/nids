@@ -13,7 +13,7 @@ class ModelTrainer:
         self.x = x
         self.y = y
         self.model = None
-        
+
     def train_model_with_activation(self, activation_function='relu', output_layer_type='sigmoid', callbacks=None):
         if callbacks is None:
             callbacks = []
@@ -28,7 +28,7 @@ class ModelTrainer:
 
         self.model = Sequential()
         self.model.add(Dense(30, input_dim=self.x.shape[1], activation=activation_function))
-        
+
         if output_layer_type == 'sigmoid':
             self.model.add(Dense(1, activation='sigmoid'))
         elif output_layer_type == 'softmax':
@@ -42,14 +42,14 @@ class ModelTrainer:
             raise ValueError('Invalid output_layer_type')
 
         self.model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
-        
+
         history = History()
         if callbacks:
             callbacks.append(history)
         else:
             callbacks = [history]
-            
-        self.model.fit(x_train, y_train, epochs=10, batch_size=50, callbacks=callbacks)
+
+        self.model.fit(x_train, y_train, epochs=10, batch_size=50)
 
         return self.model, x_test, y_test, history.history['accuracy'], history.history['loss']
 
