@@ -35,7 +35,7 @@
 #         self.x = ct.fit_transform(self.x)
 #         labelencoder_y = LabelEncoder()
 #         self.y = labelencoder_y.fit_transform(self.y)
-    
+
 import pandas as pd
 from sklearn.preprocessing import LabelEncoder, OneHotEncoder
 from sklearn.compose import ColumnTransformer
@@ -43,7 +43,7 @@ from sklearn.compose import ColumnTransformer
 
 # DataPreprocessor 클래스 정의
 class DataPreprocessor:
-    def __init__(self,dataset_path):
+    def __init__(self, dataset_path):
         self.dataset = pd.read_csv(dataset_path)
         self.x = None
         self.y = None
@@ -57,8 +57,8 @@ class DataPreprocessor:
         self.dataset['normal.'] = self.dataset['normal.'].replace(categories_to_replace, 'attack')
 
     def _split_features_labels(self):
-        self.x = self.dataset.iloc[:, :self.dataset.shape[1]-1].values
-        self.y = self.dataset.iloc[:, self.dataset.shape[1]-1].values
+        self.x = self.dataset.iloc[:, :self.dataset.shape[1] - 1].values
+        self.y = self.dataset.iloc[:, self.dataset.shape[1] - 1].values
         self.y = LabelEncoder().fit_transform(self.y)
 
     def set_encoding_type(self, encoding_type):

@@ -1,6 +1,7 @@
 import sys
 import matplotlib.pyplot as plt
-from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog, QTableWidget, QTableWidgetItem, QComboBox, QProgressBar, QVBoxLayout, QInputDialog, QWidget
+from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog, QTableWidget, QTableWidgetItem, QComboBox, \
+    QProgressBar, QVBoxLayout, QInputDialog, QWidget
 from PyQt5.uic import loadUi
 import pandas as pd
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
@@ -8,12 +9,13 @@ from matplotlib.figure import Figure
 from PyQt5.QtWidgets import QDialog
 from sklearn.metrics import confusion_matrix
 import seaborn as sns  # seaborn 라이브러리를 사용하여 혼동 행렬을 그립니다.
-
 from mplwidget import mplwidget
 from beta_data_preprocessor import DataPreprocessor
 from beta_model_trainer import ModelTrainer
 from beta_model_evaluator import ModelEvaluator
 from beta_callback import CustomCallback
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QLabel
 
 
 class WindowClass(QMainWindow):
@@ -63,7 +65,8 @@ class WindowClass(QMainWindow):
 
     def select_dataset(self):
         options = QFileDialog.Options()
-        filePath, _ = QFileDialog.getOpenFileName(self, "Select Dataset", "", "CSV Files (*.csv);;All Files (*)", options=options)
+        filePath, _ = QFileDialog.getOpenFileName(self, "Select Dataset", "", "CSV Files (*.csv);;All Files (*)",
+                                                  options=options)
         if filePath:
             self.progress_bar.setValue(10)  # 파일 선택 완료, 10%로 설정
             self.data_preprocessor = DataPreprocessor(filePath)
@@ -99,20 +102,41 @@ class WindowClass(QMainWindow):
         selected_output_layer = self.output_layer_select.currentText()
 
         self.progress_bar.setValue(40)  # 전처리 완료
+
+        # ModelTrainer 인스턴스 생성 시 변경된 인터페이스에 맞게 수정
         model_trainer = ModelTrainer(self.data_preprocessor.x, self.data_preprocessor.y)
 
-        # CustomCallback 인스턴스 생성
-        custom_callback = CustomCallback(self.progress_list, self.progress_bar, self.mplwidget)  # mplwidget 추가
+        # CustomCallback 인스턴스 생성 시 수정된 인터페이스에 맞게 progress_list를 제거
+        custom_callback = CustomCallback(progress_bar=self.progress_bar, mplwidget=self.mplwidget)
 
         # 모델 훈련
         self.trained_model, self.x_test, self.y_test, self.accuracy_data, self.loss_data = \
             model_trainer.train_model_with_activation(
-                selected_activation,
-                selected_output_layer,
-                callbacks=[custom_callback]
+                activation_function=selected_activation,
+                output_layer_type=selected_output_layer,
+                progress_bar=self.progress_bar,
+                mplwidget=self.mplwidget
             )
+    #
+    # def train_model(self):
+    #     selected_activation = self.hidden_layer_select.currentText()
+    #     selected_output_layer = self.output_layer_select.currentText()
+    #
+    #     self.progress_bar.setValue(40)  # 전처리 완료
+    #     model_trainer = ModelTrainer(self.data_preprocessor.x, self.data_preprocessor.y)
+    #
+    #     # CustomCallback 인스턴스 생성
+    #     custom_callback = CustomCallback(self.progress_list, self.progress_bar, self.mplwidget)  # mplwidget 추가
+    #
+    #     # 모델 훈련
+    #     self.trained_model, self.x_test, self.y_test, self.accuracy_data, self.loss_data = \
+    #         model_trainer.train_model_with_activation(
+    #             selected_activation,
+    #             selected_output_layer,
+    #             callbacks=[custom_callback]
+    #         )
 
-        self.progress_bar.setValue(70)  # 모델 훈련 완료
+
 
         # 모델 평가
         model_evaluator = ModelEvaluator(self.trained_model)
@@ -132,36 +156,45 @@ class WindowClass(QMainWindow):
 
     def showGraphDialog(self):
         dialog = QDialog(self)
-        dialog.setWindowTitle("Confusion Matrix")
+        dialog.setWindowTitle("Accuracy, Loss, and Confusion Matrix")
 
-        fig, ax = plt.subplots(figsize=(5, 5))  # 하나의 subplot 생성
+        fig, axs = plt.subplots(3, 1, figsize=(5, 8))  # 3개의 subplot을 가진다.
         canvas = FigureCanvas(fig)
 
         layout = QVBoxLayout()
         layout.addWidget(canvas)
         dialog.setLayout(layout)
 
-        # 혼동 행렬 계산 및 그리기
-        y_pred = self.trained_model.predict(self.x_test).argmax(axis=1)  # 모델의 예측값을 가져옵니다.
+        # 실제 데이터로 그래프 그리기
+        epochs = range(1, len(self.accuracy_data) + 1)
 
-        # y_test의 차원에 따라 적절한 axis 값을 설정
+        axs[0].plot(epochs, self.accuracy_data)
+        axs[0].set_title('Accuracy')
+
+        axs[1].plot(epochs, self.loss_data)
+        axs[1].set_title('Loss')
+
+        # 예측 레이블 계산
+        y_pred_prob = self.trained_model.predict(self.x_test)
+        if y_pred_prob.shape[1] > 1:  # 다중 클래스 분류의 경우
+            y_pred = y_pred_prob.argmax(axis=1)
+        else:  # 이진 분류의 경우
+            y_pred = (y_pred_prob > 0.5).astype(int)
+
+        # 실제 레이블 계산
         if len(self.y_test.shape) > 1 and self.y_test.shape[1] > 1:
-            y_true = self.y_test.argmax(axis=1)  # 실제 레이블을 가져옵니다.
+            y_true = self.y_test.argmax(axis=1)
         else:
-            y_true = self.y_test  # 이미 1차원 배열이라면 그대로 사용
+            y_true = self.y_test
 
-        # 이제 여기에서 labels를 설정합니다.
-        if len(self.y_test.shape) > 1 and self.y_test.shape[1] > 1:
-            labels = list(range(self.y_test.shape[1]))  # 다중 레이블의 경우
-        else:
-            labels = list(set(y_true))  # 단일 레이블의 경우
+        # 혼동 행렬 계산
+        conf_matrix = confusion_matrix(y_true, y_pred)
 
-        conf_matrix = confusion_matrix(y_true, y_pred, labels=labels)
-
-        sns.heatmap(conf_matrix, annot=True, fmt='d', ax=ax, xticklabels=labels, yticklabels=labels)
-        ax.set_title('Confusion Matrix')
-        ax.set_xlabel('Predicted')
-        ax.set_ylabel('True')
+        # 혼동 행렬 그리기
+        sns.heatmap(conf_matrix, annot=True, fmt='d', ax=axs[2])
+        axs[2].set_title('Confusion Matrix')
+        axs[2].set_xlabel('Predicted')
+        axs[2].set_ylabel('True')
 
         dialog.exec_()
 
@@ -170,13 +203,16 @@ class WindowClass(QMainWindow):
 
         # QTableWidget 생성
         self.x_test_table = QTableWidget()
-        self.x_test_table.setRowCount(x_test_df.shape[0])
+        self.x_test_table.setRowCount(10)
         self.x_test_table.setColumnCount(x_test_df.shape[1])
 
         # 데이터 채우기
-        for i in range(x_test_df.shape[0]):
+        for i in range(10):
             for j in range(x_test_df.shape[1]):
                 self.x_test_table.setItem(i, j, QTableWidgetItem(str(x_test_df.iat[i, j])))
+        # for i in range(x_test_df.shape[0]):
+        #     for j in range(x_test_df.shape[1]):
+        #         self.x_test_table.setItem(i, j, QTableWidgetItem(str(x_test_df.iat[i, j])))
 
         # QScrollArea에 QTableWidget 설정
         self.x_test_scrollarea.setWidget(self.x_test_table)
