@@ -16,12 +16,15 @@ from beta_model_evaluator import ModelEvaluator
 from beta_callback import CustomCallback
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QLabel
+from math import floor
+from beta_ranking import RankingManager
 
 
 class WindowClass(QMainWindow):
     def __init__(self):
         super(WindowClass, self).__init__()
         loadUi("beta_ui.ui", self)
+        self.ranking_data = []  # 랭킹 데이터를 저장할 리스트 초기화
 
         self.Preprocessing_select_button.clicked.connect(self.show_preprocessing_selection)
 
@@ -45,17 +48,20 @@ class WindowClass(QMainWindow):
         layout.addWidget(self.mplwidget)
         placeholder.setLayout(layout)
 
+        # RankingManager 인스턴스 생성
+        self.ranking_manager = RankingManager(self.RankingTable)
+
     def show_preprocessing_selection(self):
-        algorithms = ["one-hot encoding", "label-encoding"]
-        selected_algorithm, okPressed = QInputDialog.getItem(self, "Select Algorithm", "Algorithm:", algorithms, 0,
+        preprocessings = ["one-hot encoding", "label-encoding"]
+        selected_preprocessing, okPressed = QInputDialog.getItem(self, "Select preprocessing", "preprocessing:", preprocessings, 0,
                                                              False)
 
-        if okPressed and selected_algorithm:
-            self.selected_preprocessing_label.setText(selected_algorithm)
-            if selected_algorithm == "one-hot encoding":
+        if okPressed and selected_preprocessing:
+            self.selected_preprocessing_label.setText(selected_preprocessing)
+            if selected_preprocessing == "one-hot encoding":
                 if self.data_preprocessor:
                     self.data_preprocessor.one_hot_encode_string_columns()
-            elif selected_algorithm == "label-encoding":
+            elif selected_preprocessing == "label-encoding":
                 if self.data_preprocessor:
                     self.data_preprocessor.label_encode_string_columns()
 
@@ -70,25 +76,22 @@ class WindowClass(QMainWindow):
         if filePath:
             self.progress_bar.setValue(10)  # 파일 선택 완료, 10%로 설정
             self.data_preprocessor = DataPreprocessor(filePath)
+
+            # 'normal' 칼럼 선택
+            self.data_preprocessor.select_column_for_normalization(self)
+
+            # 데이터 전처리
             self.progress_bar.setValue(20)  # 데이터 전처리 시작, 20%로 설정
             self.data_preprocessor.preprocess_data()
             self.progress_bar.setValue(30)  # 데이터 전처리 완료, 30%로 설정
+
             self.dataset = self.data_preprocessor.dataset  # 전처리된 데이터셋
             self.dataset_filename_label.setText(filePath.split('/')[-1])
             self.dataset_path_label.setText(filePath)
             self.fillTable()
             self.show_preprocessing_selection()
 
-
     def fillTable(self):
-        # self.tableWidget.setRowCount(self.dataset.shape[0])
-        # self.tableWidget.setColumnCount(self.dataset.shape[1])
-        # self.tableWidget.setHorizontalHeaderLabels(self.dataset.columns)
-        #
-        # for i in range(self.dataset.shape[0]):
-        #     for j in range(self.dataset.shape[1]):
-        #         self.tableWidget.setItem(i, j, QTableWidgetItem(str(self.dataset.iat[i, j])))
-
         self.tableWidget.setRowCount(10)
         self.tableWidget.setColumnCount(self.dataset.shape[1])
         self.tableWidget.setHorizontalHeaderLabels(self.dataset.columns)
@@ -117,6 +120,7 @@ class WindowClass(QMainWindow):
                 progress_bar=self.progress_bar,
                 mplwidget=self.mplwidget
             )
+
     #
     # def train_model(self):
     #     selected_activation = self.hidden_layer_select.currentText()
@@ -153,6 +157,13 @@ class WindowClass(QMainWindow):
         self.progress_bar.setValue(100)  # 모든 과정 완료
 
         self.showGraphDialog()
+
+        # 모델 평가 결과를 랭킹 매니저에 추가
+        self.ranking_manager.add_new_ranking(
+            self.selected_preprocessing_label.text(),
+            self.accuracy,
+            self.f1
+        )
 
     def showGraphDialog(self):
         dialog = QDialog(self)
@@ -252,6 +263,23 @@ class WindowClass(QMainWindow):
         # QScrollArea에 새로운 QTableWidget 설정
         self.x_test_scrollarea_2.setWidget(selected_row_table)
 
+    def update_ranking_table(self):
+        # 정확도에 따라 랭킹 데이터 정렬
+        sorted_data = sorted(self.ranking_data, key=lambda x: x['Accuracy'], reverse=True)
+
+        # RankingTable 위젯 설정
+        self.RankingTable.setRowCount(len(sorted_data))
+        self.RankingTable.setColumnCount(3)
+        self.RankingTable.setHorizontalHeaderLabels(['preprocessing', 'Accuracy', 'F1 Score'])
+
+        # 정렬된 데이터로 RankingTable 채우기
+        for row, entry in enumerate(sorted_data):
+            self.RankingTable.setItem(row, 0, QTableWidgetItem(entry['preprocessing']))
+            self.RankingTable.setItem(row, 1, QTableWidgetItem(f"{floor(entry['Accuracy'] * 100) / 100:.2f}"))
+            self.RankingTable.setItem(row, 2, QTableWidgetItem(f"{floor(entry['F1Score'] * 100) / 100:.2f}"))
+
+        # RankingTable의 크기를 내용에 맞게 조정
+        self.RankingTable.resizeColumnsToContents()
 
 
 if __name__ == "__main__":

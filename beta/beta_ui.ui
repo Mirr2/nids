@@ -6,29 +6,19 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1551</width>
-    <height>831</height>
+    <width>1504</width>
+    <height>684</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QTableView" name="RankingTable">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>20</y>
-      <width>151</width>
-      <height>551</height>
-     </rect>
-    </property>
-   </widget>
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>60</x>
-      <y>30</y>
+      <x>90</x>
+      <y>20</y>
       <width>60</width>
       <height>16</height>
      </rect>
@@ -40,7 +30,7 @@
    <widget class="QToolButton" name="Database_select_button">
     <property name="geometry">
      <rect>
-      <x>170</x>
+      <x>280</x>
       <y>20</y>
       <width>121</width>
       <height>22</height>
@@ -53,7 +43,7 @@
    <widget class="QToolButton" name="Preprocessing_select_button">
     <property name="geometry">
      <rect>
-      <x>170</x>
+      <x>280</x>
       <y>70</y>
       <width>121</width>
       <height>21</height>
@@ -66,7 +56,7 @@
    <widget class="QToolButton" name="Algorithm_select_button">
     <property name="geometry">
      <rect>
-      <x>170</x>
+      <x>280</x>
       <y>100</y>
       <width>121</width>
       <height>21</height>
@@ -79,10 +69,10 @@
    <widget class="QLabel" name="dataset_path_label">
     <property name="geometry">
      <rect>
-      <x>170</x>
+      <x>280</x>
       <y>50</y>
-      <width>531</width>
-      <height>16</height>
+      <width>541</width>
+      <height>20</height>
      </rect>
     </property>
     <property name="text">
@@ -92,7 +82,7 @@
    <widget class="QLabel" name="dataset_filename_label">
     <property name="geometry">
      <rect>
-      <x>300</x>
+      <x>410</x>
       <y>20</y>
       <width>111</width>
       <height>16</height>
@@ -105,9 +95,9 @@
    <widget class="QScrollArea" name="dataset_scrollarea">
     <property name="geometry">
      <rect>
-      <x>170</x>
+      <x>280</x>
       <y>130</y>
-      <width>691</width>
+      <width>671</width>
       <height>161</height>
      </rect>
     </property>
@@ -119,7 +109,7 @@
       <rect>
        <x>0</x>
        <y>0</y>
-       <width>689</width>
+       <width>669</width>
        <height>159</height>
       </rect>
      </property>
@@ -128,9 +118,9 @@
    <widget class="QScrollArea" name="x_test_scrollarea">
     <property name="geometry">
      <rect>
-      <x>170</x>
+      <x>280</x>
       <y>330</y>
-      <width>691</width>
+      <width>671</width>
       <height>161</height>
      </rect>
     </property>
@@ -142,7 +132,7 @@
       <rect>
        <x>0</x>
        <y>0</y>
-       <width>689</width>
+       <width>669</width>
        <height>159</height>
       </rect>
      </property>
@@ -151,9 +141,9 @@
    <widget class="QScrollArea" name="x_test_scrollarea_2">
     <property name="geometry">
      <rect>
-      <x>170</x>
-      <y>520</y>
-      <width>391</width>
+      <x>280</x>
+      <y>530</y>
+      <width>351</width>
       <height>51</height>
      </rect>
     </property>
@@ -165,7 +155,7 @@
       <rect>
        <x>0</x>
        <y>0</y>
-       <width>389</width>
+       <width>349</width>
        <height>49</height>
       </rect>
      </property>
@@ -174,8 +164,8 @@
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
-      <x>170</x>
-      <y>500</y>
+      <x>280</x>
+      <y>510</y>
       <width>101</width>
       <height>16</height>
      </rect>
@@ -187,8 +177,8 @@
    <widget class="QProgressBar" name="progressBar">
     <property name="geometry">
      <rect>
-      <x>260</x>
-      <y>570</y>
+      <x>460</x>
+      <y>90</y>
       <width>291</width>
       <height>23</height>
      </rect>
@@ -200,9 +190,9 @@
    <widget class="QTextBrowser" name="accuracy_f1score">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>720</y>
-      <width>621</width>
+      <x>280</x>
+      <y>610</y>
+      <width>671</width>
       <height>21</height>
      </rect>
     </property>
@@ -210,8 +200,8 @@
    <widget class="QLabel" name="label_5">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>700</y>
+      <x>280</x>
+      <y>590</y>
       <width>121</width>
       <height>16</height>
      </rect>
@@ -223,8 +213,8 @@
    <widget class="QLabel" name="label_6">
     <property name="geometry">
      <rect>
-      <x>590</x>
-      <y>500</y>
+      <x>650</x>
+      <y>510</y>
       <width>60</width>
       <height>16</height>
      </rect>
@@ -236,9 +226,9 @@
    <widget class="QTextBrowser" name="y_test_textBrowser">
     <property name="geometry">
      <rect>
-      <x>580</x>
-      <y>520</y>
-      <width>281</width>
+      <x>650</x>
+      <y>530</y>
+      <width>301</width>
       <height>51</height>
      </rect>
     </property>
@@ -246,8 +236,8 @@
    <widget class="QPushButton" name="train_button">
     <property name="geometry">
      <rect>
-      <x>450</x>
-      <y>90</y>
+      <x>830</x>
+      <y>80</y>
       <width>113</width>
       <height>32</height>
      </rect>
@@ -259,7 +249,7 @@
    <widget class="QComboBox" name="hidden_layer_select">
     <property name="geometry">
      <rect>
-      <x>580</x>
+      <x>720</x>
       <y>30</y>
       <width>104</width>
       <height>26</height>
@@ -279,7 +269,7 @@
    <widget class="QComboBox" name="output_layer_select">
     <property name="geometry">
      <rect>
-      <x>700</x>
+      <x>840</x>
       <y>30</y>
       <width>104</width>
       <height>26</height>
@@ -304,7 +294,7 @@
    <widget class="QLabel" name="label_3">
     <property name="geometry">
      <rect>
-      <x>170</x>
+      <x>290</x>
       <y>310</y>
       <width>101</width>
       <height>16</height>
@@ -317,7 +307,7 @@
    <widget class="QLabel" name="selected_preprocessing_label">
     <property name="geometry">
      <rect>
-      <x>300</x>
+      <x>410</x>
       <y>70</y>
       <width>171</width>
       <height>16</height>
@@ -330,7 +320,7 @@
    <widget class="QLabel" name="label_4">
     <property name="geometry">
      <rect>
-      <x>590</x>
+      <x>730</x>
       <y>10</y>
       <width>81</width>
       <height>16</height>
@@ -343,7 +333,7 @@
    <widget class="QLabel" name="label_7">
     <property name="geometry">
      <rect>
-      <x>710</x>
+      <x>850</x>
       <y>10</y>
       <width>81</width>
       <height>16</height>
@@ -353,36 +343,23 @@
      <string>output layer</string>
     </property>
    </widget>
-   <widget class="QTextEdit" name="progress_list">
-    <property name="geometry">
-     <rect>
-      <x>170</x>
-      <y>590</y>
-      <width>691</width>
-      <height>121</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_8">
-    <property name="geometry">
-     <rect>
-      <x>170</x>
-      <y>570</y>
-      <width>91</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Progress list</string>
-    </property>
-   </widget>
    <widget class="mplwidget" name="loss_accuracy" native="true">
     <property name="geometry">
      <rect>
-      <x>930</x>
-      <y>180</y>
-      <width>531</width>
+      <x>970</x>
+      <y>60</y>
+      <width>511</width>
       <height>431</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QTableWidget" name="RankingTable">
+    <property name="geometry">
+     <rect>
+      <x>15</x>
+      <y>41</y>
+      <width>241</width>
+      <height>601</height>
      </rect>
     </property>
    </widget>
@@ -393,8 +370,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1551</width>
-     <height>31</height>
+     <width>1504</width>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu">
