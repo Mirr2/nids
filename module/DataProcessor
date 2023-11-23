@@ -1,0 +1,15 @@
+class DataProcessor:
+    def __init__(self):
+        print("This is Data Processor")
+
+    def load_data(self):
+        # Load data
+        pass
+
+    def preprocess_data(self):
+        # Preprocess data
+        pass
+
+    def train_model(self):
+        # Train model
+        pass
